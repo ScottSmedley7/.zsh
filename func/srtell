@@ -1,0 +1,99 @@
+
+# zcompile -k -U srtell
+# $Id: srtell,v 1.11 2004/09/09 23:26:03 ss Exp $
+
+srtell ()
+{
+	local bNCO=false bRev=false bDiff=false dirs=. bRecursive=false bWarn=false
+	local indent="\t"
+	for arg in $* ; do
+		if [[ $arg == "-l" ]] ; then
+			bNCO=true
+		elif [[ $arg == "-c" ]] ; then
+			bRev=true
+		elif [[ $arg == "-d" ]] ; then
+			bDiff=true
+		elif [[ $arg == "-r" ]] ; then
+			dirs=($(find . -type d -name 'RCS'))
+			bRecursive=true
+		elif [[ $arg == "-w" ]] ; then
+			bWarn=true
+		elif [[ $arg == "-h" || $arg == "-u" ]] ; then
+			echo "$0: [options]"
+			echo "\t-c\tList files not under revision control."
+			echo "\t-d\tRun rcsdiff on all checked out files."
+			echo "\t-h|-u\tHelp information."
+			echo "\t-l\tList files NOT checked out."
+			echo "\t-r\tDescend directories recursively."
+			echo "\t-w\tWarn if files modified but not checked out."
+			true
+			return
+		else
+			echo "${indent}unknown argument <$arg>"
+			false
+			return
+		fi
+	done
+
+
+	if ! $bRecursive && [ ! -d RCS ] ; then
+		echo "${indent}No RCS directory found"
+		false
+		return
+	fi
+
+	local initialDir=$PWD
+	foreach dir ($dirs)
+	{(# run in a subshell cos may not want globdots set externally.
+		dir=${dir%/RCS}	# dirname $dir
+		$bRecursive && echo "${indent}Entering directory $(setColor yellow invisible bold)$dir$(setColor normal)"
+		builtin cd $initialDir/$dir
+		setopt globdots
+		if $bNCO ; then
+			echo "${indent}The following files are NOT checked out:" | hilite NOT
+			foreach f (RCS/*,v)
+				name=$f:t:s/,v//
+				if [ ! -f $name ] ; then
+					echo "${indent}$name"
+				fi
+			end
+		elif $bRev ; then
+			echo "${indent}The following files are NOT under revision control:" | hilite NOT
+			for f in * ; do
+				if [ -f $f ] ; then
+					# For some file types, we don't actually care if they're
+					# not under revision control.
+					local bIgnore=0
+					foreach ext ($fignore .zwc)
+						[[ ".${f:e}" == $ext ]] && bIgnore=1 && break
+					end
+					if (( ! $bIgnore )) && [ ! -e RCS/$f,v ] ; then
+						echo "${indent}$f"
+					fi
+				fi
+			done
+		else
+			builtin cd RCS
+			foreach f (*,v)
+			{
+				f=${f%,v}
+				/bin/grep -l '^locks$' $f,v > /dev/null
+				if (( $? == 0 )) ; then
+					printf "${indent}$(setColor green)%-25s$(setColor normal):" $f
+					/bin/grep "; strict;$" $f,v | sed '/; strict;/s///'
+					$bDiff && (builtin cd .. && rcsdiff $f)
+				elif $bWarn && [ -f ../$f ] ; then
+					(builtin cd .. && rcsdiff -q $f > /dev/null)
+					local rv=$?
+					if (( $rv == 1 )) ; then
+						echo "${indent}$(setColor red invisible bold)Warning$(setColor normal): $f is modified but not checked out!"
+					elif (( $rv >= 2 )) ; then
+						echo "${indent}$(setColor red invisible bold)Error$(setColor normal): something went seriously wrong!"
+						return 2
+					fi
+				fi
+			}
+			builtin cd $initialDir
+		fi
+	)}
+}

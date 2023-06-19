@@ -1,0 +1,36 @@
+# Remove old compiler from $PATH & $LD_LIBRARY_PATH (if any).
+export PATH=$(path | egrep -v '(^/usr/local/(gcc|llvm)|intel)' | tr -s '\n' :)
+export PATH=$(path | egrep -v '/BuildKit/.*/gcc/' | tr -s '\n' :)
+export LD_LIBRARY_PATH=$(path LD_LIBRARY_PATH | egrep -v '(^/usr/local/gcc|intel)' | tr -s '\n' :)
+export LD_LIBRARY_PATH=$(path LD_LIBRARY_PATH | egrep -v '/BuildKit/.*/gcc/' | tr -s '\n' :)
+export MANPATH=$(path MANPATH | egrep -v '/gcc' | tr -s '\n' :)
+if [[ $1 == "intel" ]] ; then
+    [ -d /opt/intel ] || { echo "Compiler $1 not found" ; return 1 ; }
+    . /opt/intel/bin/compilervars.sh intel64
+    export LD_RUN_PATH=/opt/intel/composer_xe_2011_sp1.8.273/compiler/lib/intel64
+elif [[ $1 == "llvm" ]] ; then
+    [ -e /usr/local/llvm-3.1 ] || { echo "Compiler $1 not found" ; return 1 ; }
+    export LD_LIBRARY_PATH=/usr/local/gcc-4.6.2/lib64:/usr/local/gcc-4.6.2/lib:$LD_LIBRARY_PATH
+    export PATH=/usr/local/llvm-3.1/bin:$PATH
+else
+    if [[ $1 != "default" ]] ; then
+        if [ -d /usr/local/gcc-$1 ] ; then
+            export PATH=/usr/local/gcc-$1/bin:$PATH
+            export LD_LIBRARY_PATH=/usr/local/gcc-$1/lib64:/usr/local/gcc-$1/lib:$LD_LIBRARY_PATH
+            export MANPATH=/usr/local/gcc-$1/share/man:$MANPATH
+        else
+            # Check if the compiler is in the BuildKit
+            local ver=$(echo $1 | cut -d. -f1,2).x
+            local bkdir=$RS_BUILDKIT/$(uname -s)/$(uname -m)-gcc$ver/gcc/$(getdistro)
+            if [ -d $bkdir ] ; then
+                export PATH=$bkdir/bin:$PATH
+                export LD_LIBRARY_PATH=$bkdir/lib64:$bkdir/lib:$LD_LIBRARY_PATH
+                export MANPATH=$bkdir/share/man:$MANPATH
+            else
+                echo "Compiler \"$1\" not found"
+                return 1
+            fi
+        fi
+    fi
+fi
+echo $1 >! $compiler

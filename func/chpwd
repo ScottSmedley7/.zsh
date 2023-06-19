@@ -1,0 +1,12 @@
+
+# zcompile -k -U chpwd
+# $Id: chpwd,v 1.2 2002/06/01 05:05:23 scott Exp ss $
+
+chpwd ()
+{
+	[ "$TERM[1,5]" = "xterm" -o "$TERM" = "rxvt" ] && getDir
+}
+# If a autoload file consists only of a function definition
+# (or KSH_AUTOLOAD is set), the function is executed on autoloading.
+# To inhibit this, you can just stick a `:' command before or after
+# the function definition. 

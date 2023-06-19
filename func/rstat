@@ -1,0 +1,18 @@
+
+rstat ()
+{
+	tmpfile=$(mktemp)
+	ps -p $(pgrep -u $USER -d, -f /reactor/bin/) -o user,pid,command 2>& /dev/null | sed "s|$RS_BIN|\$RS_BIN|" | sed "s|$RS_STARTUP_SCRIPTS|\$RS_STARTUP_SCRIPTS|" | tee $tmpfile
+	ps -p $(pgrep -d, -f $RS_BUILDKIT_ROOT) -o user= -o pid= -o command= 2>& /dev/null | grep -v g++ | sed "s|$RS_29WEST|\$RS_29WEST|" | sed "s|$RS_BUILDKIT_ROOT|\$RS_BUILDKIT_ROOT|" | tee -a $tmpfile
+	foreach d (spawnd controld securityd parameterd productd orderDatabased traded positiond preDealRiskd informationd orderMonitord attd theod ORDER_ROUTER PRICE_SERVER LIQUIDX tnwgd)
+		n=$(count $d $tmpfile)
+		[ $n -eq 1 ] && continue
+		[ $n -eq 0 ] && n=$(color NO red)
+		printf "%2s %14s processes running\n" $n $d
+	end
+	grep -v ^USER $tmpfile | wc -l | read n na
+	echo "There are $(color $n yellow) Reactor processes running."
+	rm $tmpfile
+}
+
+:

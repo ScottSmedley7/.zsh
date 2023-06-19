@@ -1,0 +1,9 @@
+
+# zcompile -k -U hilite
+# $Id: hilite,v 1.1 2000/08/28 07:21:08 scott Exp $
+
+hilite ()
+{
+	# perl $HOME/perl/hilite.pl $*
+	grep --color "$*\|\$"
+}

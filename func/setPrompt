@@ -1,0 +1,38 @@
+
+# zcompile -k -U setPrompt
+# $Id: setPrompt,v 1.9 2001/04/27 14:12:37 scott Exp $
+
+setPrompt ()
+{
+	local rv=$?
+	local color0 color1 color2 errno
+	color0=$(setColor $PROMPT_COLOR_ARGS)
+	errno=""
+	if (( $rv == 0 )) ; then
+		color1=$color0
+		color2=$color0
+	else
+		color2=$(setColor red invisible bold)
+		if (( $rv == 1 )) ; then
+			color1=$color0
+		else
+			color1=$color2
+			if (( $rv != 2 )) ; then
+				if [ $rv -gt 128 ] ; then
+					# note that <signals> is a zero-based array.
+					errno="(sig$signals[(1+$rv)%128])"
+				else
+					errno="($rv)"
+				fi
+			fi
+		fi
+	fi
+	# %{ and %} must surround all parts of the prompt that don't affect the           
+	# cursor position.  Otherwise zsh has no idea how much space the prompt           
+	# will take up on the screen.
+	export PROMPT=$PROMPT_STRING%{$color1%}$errno">"%{$color2%}"> "%{`setColor normal`%}
+}
+# If a autoload file consists only of a function definition
+# (or KSH_AUTOLOAD is set), the function is executed on autoloading.
+# To inhibit this, you can just stick a `:' command before or after
+# the function definition. 

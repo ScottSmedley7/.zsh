@@ -1,0 +1,16 @@
+
+# zcompile -k -U precmd
+# $Id: precmd,v 1.3 2003/04/05 04:27:34 scott Exp $
+
+precmd ()
+{
+    setPrompt
+    if [ $TERM[1,5] = "xterm" -o $TERM = "rxvt" ] ; then
+    # elif [[ $TTY[9] != "C" ]] ; then
+        setTitleAndIcon "%n@$HOSTNAME $DIR_NAME" $HOSTNAME:$DIR_NAME
+    fi
+}
+# If a autoload file consists only of a function definition
+# (or KSH_AUTOLOAD is set), the function is executed on autoloading.
+# To inhibit this, you can just stick a `:' command before or after
+# the function definition. 

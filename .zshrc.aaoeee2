@@ -1,0 +1,3 @@
+
+# ACMM utils
+export PATH=/instsoft/extern/linux_rhe3/bin:$PATH

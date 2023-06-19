@@ -1,0 +1,48 @@
+
+# zcompile -k -U setColor
+# $Id: setColor,v 1.7 2001/04/27 14:12:37 scott Exp $
+# $Date: 2001/04/27 14:12:37 $
+# $Revision: 1.7 $
+
+setColor ()
+{
+	local escapeSequence aa bg fg
+	if [ $# = 0 ] ; then
+		echo "usage $0 fgColor [bgColor] [attr]"
+		false
+		return
+	fi
+	if [[ "$1" != "normal" ]] ; then
+		# escapeSequence="1;"
+		fg=$(getColor $1)
+		[ $? != 0 ] && { echo bugger 1>&2 ; false ; return }
+		let fg=30+$fg
+		escapeSequence=$fg
+		if [ $# -gt 1 ] ; then
+			# a background color has been specified.
+			if [ "$2" != "invisible" ] ; then
+				bg=`getColor $2`
+				[ $? != 0 ] && { false ; return }
+				let bg=40+$bg
+				escapeSequence="$escapeSequence;$bg"
+			fi
+		fi
+		if [ $# -gt 2 ] ; then
+			aa=`getAttribute $3`
+			[ $? != 0 ] && { false ; return }
+			escapeSequence="$escapeSequence;$aa"
+		fi
+	fi
+	# red=$'\e[31m'
+	# echo $'\e$escapeSequence''m'
+	echo "\e[${escapeSequence}m"
+
+	# print -nP '\e[\033['$escapeSequence'm'
+	# echo "this is <$1> $escapeSequence"
+}
+# print "function $0 initialised."
+# If a autoload file consists only of a function definition
+# (or KSH_AUTOLOAD is set), the function is executed on autoloading.
+# To inhibit this, you can just stick a `:' command before or after
+# the function definition. 
+

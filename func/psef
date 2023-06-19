@@ -1,0 +1,11 @@
+ps -ef | tr -s ' ' | cut -d' ' -f1,2,8- | while read user pid exe args ; do
+    if [[ $exe[0] != "/" ]] && [[ $exe[0] != "[" ]] ; then
+        if [ -r "/proc/$pid/exe" ] ; then
+            local cmd=$(readlink /proc/$pid/exe)
+            local t=$cmd:t
+            [[ $t[0,4] == ".nfs" ]] && cmd=$cmd:h/$exe
+            exe=$cmd
+        fi
+    fi
+    printf "%8s %5d %s\n" $user $pid "$exe $args"
+done

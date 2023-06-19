@@ -1,0 +1,42 @@
+
+# zcompile -z -U getAttribute
+# $Id: getAttribute,v 1.2 2001/04/27 14:12:05 scott Exp $
+# $Date: 2001/04/27 14:12:05 $
+# $Revision: 1.2 $
+
+getAttribute ()
+{
+	case $1 in
+		underline)
+			echo -n 4
+			;;
+		bold)
+			echo -n 1
+			;;
+		blink)
+			echo -n 5
+			;;
+		reverse)
+			echo -n 7
+			;;
+		invisible)
+			echo -n 8
+			;;
+		reset)
+			echo -n 0
+			;;
+		*)
+			echo "$0: unknown attribute <$1>" 1>&2
+			false
+			return
+			;;
+	esac
+	true
+	return
+}
+# print "function $0 initialised."
+# If a autoload file consists only of a function definition
+# (or KSH_AUTOLOAD is set), the function is executed on autoloading.
+# To inhibit this, you can just stick a `:' command before or after
+# the function definition. 
+

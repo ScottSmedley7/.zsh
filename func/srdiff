@@ -1,0 +1,73 @@
+
+# zcompile -k -U srdiff
+# $Id: srdiff,v 1.5 2004/04/18 13:01:27 ss Exp $
+
+srdiff ()
+{
+	(
+	local n=1 xdiff rev1 rev2 file verbose=0
+	while getopts "d:r:vx:" option ; do
+        case $option in
+			d|x)
+				xdiff=$OPTARG
+				;;
+			r)
+				if [ -z "$rev1" ] ; then
+					rev1="-r$OPTARG"
+				else
+					rev2="-r$OPTARG"
+				fi
+				;;
+			v)
+				verbose=1
+				;;
+			*)
+				echo "Unknown option - $option" >&2
+				exit 2
+				;;
+		esac
+	done
+
+	if (( $verbose == 1 )) ; then
+		echo "xdiff=$xdiff"
+		echo "rev1=$rev1"
+		echo "rev2=$rev2"
+	fi
+
+	shift `expr $OPTIND - 1`
+	if [ $# -gt 1 ] ; then
+		echo "Too many file arguments: $*" >&@
+		exit 2
+	elif [ $# -eq 1 ] ; then
+		file=$1
+	else
+		echo "No file specified." >&2
+		exit 2
+	fi
+
+	if [ -n "$xdiff" ] ; then
+		local tempDir=/tmp/rdiff-`date +%s`
+		mkdir $tempDir
+		file1=$tempDir/$file$rev1
+		if [ -z "$rev1" ] ; then
+			file1=$tempDir/$file-head
+		fi
+		co $rev1 $tempDir/$file RCS/$file,v
+		mv $tempDir/$file $file1
+		if [ -n "$rev2" ] ; then
+			file2=$tempDir/$file$rev2
+			co $rev2 $tempDir/$file RCS/$file,v
+			mv $tempDir/$file $file2
+		else
+			file2=$file
+		fi
+		$xdiff $file1 $file2
+		rm -rf $tempDir
+	else
+		rcsdiff $*
+	fi
+	)
+	# the only bug with this script appears 2 b with co
+	# silently checking out version of files greater than
+	# @ head!
+}

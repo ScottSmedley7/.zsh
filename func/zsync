@@ -1,0 +1,12 @@
+if [[ $HOSTNAME != "pluto" ]] ; then
+    echo -n "Copy zsh configuration from master (pluto) to this host? (y/n) "
+    read -k k
+    echo
+    [[ "$k" == "y" ]] && rsync -av --exclude='*.swp' ssmedley@pluto:~/.zsh ~
+    return
+fi
+
+foreach host (ss@aaolx05sol ssmedley@aaolxp ssmedley@vm ssmedley@aesopbi)
+    echo $(setColor 35 invisible bold)Syncing $host$(setColor normal)
+    rsync -av --exclude='*.swp' ~/Dropbox/.zsh $host:
+end

@@ -1,0 +1,40 @@
+
+if [ -d /usr/local/acmmlib ] ; then
+    export ACMM_LIBDIR=/usr/local/acmmlib
+elif [ -d /instsoft/extern/linux_rhe3/acmmlib ] ; then
+    export ACMM_LIBDIR=/instsoft/extern/linux_rhe3/acmmlib
+fi
+acf () { env ACMM_BASE_MOD_DIR=$e acmmCompareFile -d tkdiff $* }
+
+
+
+[ -n "$DRAMA" ] && . $DRAMA/drama.sh
+
+function dramastart ()
+{
+    [ -n "$DRAMA" ] && { echo "DRAMA is already running" ; return 2 }
+    ~/drama/dramastart $*
+}
+
+win () { rdesktop -K -d AAO.gov.au -u $USER -g 1915x1050 inst2.aao.gov.au }
+
+genericfit () { $e/fibrepos/lmfit/util/Linux/genericFit $* }
+
+_ssh () { ssh -X -o TCPKeepAlive=yes -o ServerAliveInterval=300 $* }
+
+[ -z "$USER_" ] && USER_=$USER[0,2]
+
+sshu () { _ssh $USER_@ubuntu $* }
+sshp () { _ssh $USER@aaolx64ssme $* } # pluto
+sshq1 () { _ssh -x $USER_@q1 $* }
+sshq2 () { _ssh -x $USER_@q2 $* }
+sshq3 () { _ssh -x $USER_@q3 $* }
+sshq4 () { _ssh -x $USER_@q4 $* }
+ssha () { _ssh $USER_@aesop $* }
+
+[ -z "$e" ] && [ -f $HOME/4most/aesop/.zshrc ] && export e=$HOME/4most
+
+if [ -n "$e" ] ; then
+	. $e/aesop/.zshrc
+	. $e/aesop/.zshrc.aesop
+fi

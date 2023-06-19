@@ -1,0 +1,57 @@
+
+# zcompile -z -U getColor
+# $Id: getColor,v 1.2 2001/04/27 14:12:37 scott Exp $
+# $Date: 2001/04/27 14:12:37 $
+# $Revision: 1.2 $
+
+getColor ()
+{
+	case "$1" in
+		black)
+			echo -n 0
+			;;
+		red)
+			echo -n 1
+			;;
+		green)
+			echo -n 2
+			;;
+		yellow)
+			echo -n 3
+			;;
+		blue)
+			echo -n 4
+			;;
+		magenta)
+			echo -n 5
+			;;
+		cyan)
+			echo -n 6
+			;;
+		white)
+			echo -n 7
+			;;
+		# brightblue)
+		# 	echo -n 64
+		# 	;;
+		# pink=91
+		# brightcyan=96
+		[0-9]*)
+			let temp=$1-30
+			echo -n $temp
+			;;
+		*)
+			echo "unknown color <$1>" 1>&2
+			false
+			return
+			;;
+	esac
+	true
+	return
+}
+# print "function $0 initialised."
+# If a autoload file consists only of a function definition
+# (or KSH_AUTOLOAD is set), the function is executed on autoloading.
+# To inhibit this, you can just stick a `:' command before or after
+# the function definition. 
+

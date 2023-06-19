@@ -1,0 +1,14 @@
+
+# zcompile -k -U setTitleAndIcon
+# $Id: setTitleAndIcon,v 1.2 2003/04/05 04:27:34 scott Exp $
+
+setTitleAndIcon ()
+{
+	# a 3rd argument means don't use prompt expansion.
+	if (( $# == 3 )) ; then
+		print -n '\e]2;'$1'\a\e]1;'$2'\a'
+	else
+		print -nP '%{\e]2;'$1'\a\e]1;'$2'\a%}'
+	fi
+}
+# print function $0 initialised. 1>&2

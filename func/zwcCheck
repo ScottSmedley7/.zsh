@@ -1,0 +1,30 @@
+
+# zcompile -k -U zwcCheck
+# $Id: zwcCheck,v 1.4 2002/06/18 23:26:21 scott Exp $
+
+zwcCheck ()
+{
+	foreach f (~/.zsh/func/*)
+	{
+		if [ ! -f $f ] || [[ $f[-4,-1] == ".zwc" ]] ; then
+			continue
+		fi
+		if [ ! -f $f.zwc ] ; then
+			echo No .zwc file for ${f:t}
+			/bin/grep '^# zcompile' $f | tr -d '#'
+		else
+			if [ $ARCHITECTURE = "irix" ] ; then
+				integer mTime=$(stat -n -m $f)
+				integer mTimeZWC=$(stat -n -m $f.zwc)
+			else
+				integer mTime=`/usr/bin/find $f -printf "%T@"`
+				integer mTimeZWC=`/usr/bin/find $f.zwc -printf "%T@"`
+			fi
+			# echo "$f: mTime=<$mTime> mTimeZWC=<$mTimeZWC>"
+			if [ $mTime -gt $mTimeZWC ] ; then
+				echo Need to zcompile ${f:t}
+				/bin/grep '^# zcompile' $f | tr -d '#'
+			fi
+		fi
+	}
+}

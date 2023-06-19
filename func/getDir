@@ -1,0 +1,18 @@
+
+# zcompile -k -U getDir
+# $Id: getDir,v 1.2 2001/10/22 10:45:39 scott Exp $
+
+getDir ()
+{
+	# for t in $(env) ; do
+	# dir=$(echo ${t##*=})
+	for t in $(echo $GETDIR_DIRS) ; do
+		dir=$(echo $(eval echo \$$t))
+		var=$(echo ${PWD##$dir})
+		if [ "$var" != "$PWD" ] ; then
+			DIR_NAME="\$$t$var"
+			return 0
+		fi
+	done
+	DIR_NAME="$PWD"
+}
