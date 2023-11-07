@@ -1,2 +1,1 @@
-export e=$HOME/projects/4most
-. $e/aesop/.zshrc
+[[ $USER == "ssmedley" ]] && ( export e=$HOME/projects/4most ; . $e/aesop/.zshrc )
