@@ -1,1 +1,7 @@
-[[ $USER == "ssmedley" ]] && ( export e=$HOME/projects/4most ; . $e/aesop/.zshrc )
+if [[ $USER == "ssmedley" ]] ; then
+	export e=$HOME/projects/4most
+elif [[ $USER == "testuser" ]] ; then
+	export e=$HOME/4most/AESOP
+fi	
+	
+. $e/aesop/.zshrc
