@@ -2,8 +2,8 @@
 # .zshenv IS read by zsh scripts
 # .zshenv is read before .zshrc
 
-export zm=~/.zsh/mod
-export zf=~/.zsh/func
+export zm=${ZDOTDIR:=$HOME}/.zsh/mod
+export zf=${ZDOTDIR:=$HOME}/.zsh/func
 # specify functions to be autoloaded:
 fpath=($zf $fpath)
 foreach f ($zf/*)
@@ -64,7 +64,7 @@ unset XFILESEARCHPATH
 [ -f $HOME/.bc ] && export BC_ENV_ARGS="-l $HOME/.bc"
 
 export HOSTNAME=$(hostname | cut -d. -f1 | tr '[:upper:]' '[:lower:]')
-[ -f ~/.zsh/.zshenv.$HOSTNAME ] && . ~/.zsh/.zshenv.$HOSTNAME
+[ -f ${ZDOTDIR:=$HOME}/.zsh/.zshenv.$HOSTNAME ] && . ${ZDOTDIR:=$HOME}/.zsh/.zshenv.$HOSTNAME
 
 [ -d $HOME/bin ] && export PATH=$HOME/bin:$PATH
 skip_global_compinit=1

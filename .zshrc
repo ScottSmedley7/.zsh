@@ -11,7 +11,7 @@ alias d='ls -alF --color'
 
 export SAVEHIST=256
 export HISTSIZE=256
-export HISTFILE=~/.history.zsh
+export HISTFILE=${ZDOTDIR:=$HOME}/.history.zsh
 
 bindkey -v	# Vi key bindings on the command-line.
 
@@ -182,11 +182,11 @@ compdef _buildrelease buildrelease
 
 
 
-foreach f (~/.zsh/mod/.zshrc.*)
+foreach f (${ZDOTDIR:=$HOME}/.zsh/mod/.zshrc.*)
     [[ $f:e != "old" ]] && [[ $f:e != "swp" ]] && . $f
 end
 
-[ -f ~/.zsh/.zshrc.$HOSTNAME ] && . ~/.zsh/.zshrc.$HOSTNAME
+[ -f ${ZDOTDIR:=$HOME}/.zsh/.zshrc.$HOSTNAME ] && . ${ZDOTDIR:=$HOME}/.zsh/.zshrc.$HOSTNAME
 
 updategetdirs
 

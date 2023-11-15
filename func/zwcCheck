@@ -1,10 +1,9 @@
 
 # zcompile -k -U zwcCheck
-# $Id: zwcCheck,v 1.4 2002/06/18 23:26:21 scott Exp $
 
 zwcCheck ()
 {
-	foreach f (~/.zsh/func/*)
+	foreach f (${ZDOTDIR:=$HOME}/.zsh/func/*)
 	{
 		if [ ! -f $f ] || [[ $f[-4,-1] == ".zwc" ]] ; then
 			continue
