@@ -26,10 +26,10 @@ _ssh () { ssh -X -o TCPKeepAlive=yes -o ServerAliveInterval=300 $* }
 
 sshu () { _ssh $USER_@ubuntu $* }
 sshp () { _ssh $USER@aaolx64ssme $* } # pluto
-sshq1 () { _ssh -x $USER_@q1 $* }
-sshq2 () { _ssh -x $USER_@q2 $* }
-sshq3 () { _ssh -x $USER_@q3 $* }
-sshq4 () { _ssh -x $USER_@q4 $* }
+sshq1 () { _ssh -x $ss@q1 $* }
+sshq2 () { _ssh -x $ss@q2 $* }
+sshq3 () { _ssh -x $ss@q3 $* }
+sshq4 () { _ssh -x $ss@q4 $* }
 ssha () { _ssh $USER_@aesop $* }
 
 [ -z "$e" ] && [ -f $HOME/4most/aesop/.zshrc ] && export e=$HOME/4most
