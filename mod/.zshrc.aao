@@ -42,7 +42,7 @@ if [ -n "$e" ] ; then
 fi
 
 gccver    () { g++ -dumpfullversion | cut -d. -f1,2 }
-sbuild    () { build    OBJDIR=Linux-gcc$(gccver) $* }
-smake     () { make     OBJDIR=Linux-gcc$(gccver) $* }
-sbuildrel () { buildrel OBJDIR=Linux-rel-gcc$(gccver) $* }
-smakerel  () { make     OBJDIR=Linux-rel-gcc$(gccver) $* }
+sbuild    () { build    OBJDIR=Linux-gcc$(gccver)     -j -l $(nproc) $* }
+smake     () { make     OBJDIR=Linux-gcc$(gccver)     -j -l $(nproc) $* }
+sbuildrel () { buildrel OBJDIR=Linux-rel-gcc$(gccver) -j -l $(nproc) $* }
+smakerel  () { make     OBJDIR=Linux-rel-gcc$(gccver) -j -l $(nproc) $* }
