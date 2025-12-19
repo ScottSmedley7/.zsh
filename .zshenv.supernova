@@ -1,0 +1,2 @@
+export e=$HOME/projects/4most
+. $e/aesop/.zshrc
