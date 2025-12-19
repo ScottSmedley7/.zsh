@@ -41,7 +41,7 @@ if [ -n "$e" ] ; then
 	. $e/aesop/.zshrc.aesop
 fi
 
-gccver    () { g++ -dumpversion | cut -d. -f1,2 }
+gccver    () { g++ -dumpfullversion | cut -d. -f1,2 }
 sbuild    () { build    OBJDIR=Linux-gcc$(gccver) $* }
 smake     () { make     OBJDIR=Linux-gcc$(gccver) $* }
 sbuildrel () { buildrel OBJDIR=Linux-rel-gcc$(gccver) $* }
