@@ -16,7 +16,7 @@ function dramastart ()
     ~/drama/dramastart $*
 }
 
-win () { rdesktop -K -d AAO.gov.au -u $USER -g 1915x1050 inst2.aao.gov.au }
+win () { rdesktop -K -d AAO.gov.au -u $USER -g 1915x1050 inst3.aao.gov.au }
 
 genericfit () { $e/fibrepos/lmfit/util/Linux/genericFit $* }
 
@@ -30,7 +30,9 @@ sshq1 () { _ssh -x $USER_@q1 $* }
 sshq2 () { _ssh -x $USER_@q2 $* }
 sshq3 () { _ssh -x $USER_@q3 $* }
 sshq4 () { _ssh -x $USER_@q4 $* }
-ssha () { _ssh $USER_@aesop $* }
+ssha () { _ssh qmostmgr@aesop $* }
+bioff () { wget -O - -q "http://134.171.237.201?&cmd=1&p=1&s=${1:=0}" > /dev/null }
+bion () { bioff 1 }
 
 [ -z "$e" ] && [ -f $HOME/4most/aesop/.zshrc ] && export e=$HOME/4most
 
@@ -38,3 +40,9 @@ if [ -n "$e" ] ; then
 	. $e/aesop/.zshrc
 	. $e/aesop/.zshrc.aesop
 fi
+
+gccver    () { g++ -dumpversion | cut -d. -f1,2 }
+sbuild    () { build    OBJDIR=Linux-gcc$(gccver) $* }
+smake     () { make     OBJDIR=Linux-gcc$(gccver) $* }
+sbuildrel () { buildrel OBJDIR=Linux-rel-gcc$(gccver) $* }
+smakerel  () { make     OBJDIR=Linux-rel-gcc$(gccver) $* }
