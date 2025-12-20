@@ -41,8 +41,10 @@ if [ -n "$e" ] ; then
 	. $e/aesop/.zshrc.aesop
 fi
 
-gccver    () { g++ -dumpfullversion | cut -d. -f1,2 }
+gccver () { g++ -dumpfullversion | cut -d. -f1,2 }
+type nproc >& /dev/null && {
 sbuild    () { build    OBJDIR=Linux-gcc$(gccver)     -j $(nproc) -l $(nproc) $* }
 smake     () { make     OBJDIR=Linux-gcc$(gccver)     -j $(nproc) -l $(nproc) $* }
 sbuildrel () { buildrel OBJDIR=Linux-rel-gcc$(gccver) -j $(nproc) -l $(nproc) $* }
 smakerel  () { make     OBJDIR=Linux-rel-gcc$(gccver) -j $(nproc) -l $(nproc) $* }
+}
