@@ -1,0 +1,7 @@
+pushd -q
+foreach d (externlibs aesopfirmware/aesop/src/api generic fibrepos aesop)
+	echo "**** $d ****"
+	cd $e/$d
+	eval $*
+end
+popd -q
